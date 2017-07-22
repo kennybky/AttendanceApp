@@ -26,9 +26,8 @@ public class PersonGroupActivity extends AppCompatActivity {
     }
     //Adds person
     public void addPerson(View view) {
-        FragmentManager fm = getSupportFragmentManager();
-        AddPersonFragment newFragment = new AddPersonFragment();
-        newFragment.show(fm, "tag");
+        Intent intent=new Intent(this,AddPersonActivity.class);
+        startActivity(intent);
     }
 
     public void takeAttendance(View view) {

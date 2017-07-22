@@ -7,4 +7,5 @@
     <string name="take_attendance">Take attendance</string>
     <string name="add_person">Add New Student</string>
     <string name="view_history">View History</string>
+    <string name="title_activity_add_person">AddPersonActivity</string>
 </resources>

@@ -4,17 +4,27 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddPersonFragment">
+    tools:context=".AddPersonFragment"
+    android:weightSum="1">
 
 <EditText
+    android:id="@+id/person_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="text"/>
 
     <Button
+        android:onClick="t"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="button"/>
+        android:text="Take Photo"
+        />
+
+    <Button
+        android:onClick="selectImageInAlbum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select From gallery"/>
 
 
 
