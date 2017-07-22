@@ -38,7 +38,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <provider
             android:name=".GenericFileProvider"
-            android:authorities="${applicationId}.my.package.name.provider"
+            android:authorities="com.jkva.android.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

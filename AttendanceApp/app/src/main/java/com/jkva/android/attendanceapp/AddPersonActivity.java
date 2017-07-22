@@ -1,10 +1,14 @@
 package com.jkva.android.attendanceapp;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -52,15 +56,15 @@ public class AddPersonActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void t(View view) {
-        Log.d("Ammar","hihihihhi");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(intent.resolveActivity(getPackageManager()) != null) {
             // Save the photo taken to a temporary file.
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
                 File file = File.createTempFile("IMG_", ".jpg", storageDir);
-                mUriPhotoTaken = FileProvider.getUriForFile(this, "AddPersonActivity", file);
+                mUriPhotoTaken = FileProvider.getUriForFile(this, "com.jkva.android.provider", file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriPhotoTaken);
                 startActivityForResult(intent, REQUEST_TAKE_PHOTO);
             } catch (IOException e) {
