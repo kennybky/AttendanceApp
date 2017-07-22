@@ -3,4 +3,32 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
+    <Button
+        android:id="@+id/addPerson"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_person"
+        android:onClick="addPerson"
+        android:layout_margin="25dp"
+        />
+
+    <Button
+        android:id="@+id/attendance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/take_attendance"
+        android:onClick="takeAttendance"
+        android:layout_margin="25dp"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_history"
+        android:onClick="viewHistory"
+        android:layout_margin="25dp"/>
+
+
 </LinearLayout>
