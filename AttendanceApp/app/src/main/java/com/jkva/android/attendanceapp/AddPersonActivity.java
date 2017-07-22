@@ -2,47 +2,38 @@ package com.jkva.android.attendanceapp;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by kenny on 7/22/2017.
- */
+public class AddPersonActivity extends AppCompatActivity {
 
-public class AddPersonFragment extends DialogFragment {
-
-    private static final int REQUEST_TAKE_PHOTO = 0 ;
-    private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 1;
-    private FragmentActivity activity;
+    private static final int REQUEST_TAKE_PHOTO = 1 ;
+    private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 0;
     private Uri mUriPhotoTaken;
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.add_person_activity, container, false);
-            activity = getActivity();
-        return view;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.add_person_activity);
+
     }
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode)
         {
             case REQUEST_TAKE_PHOTO:
             case REQUEST_SELECT_IMAGE_IN_ALBUM:
-                if (resultCode == activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Uri imageUri;
                     if (data == null || data.getData() == null) {
                         imageUri = mUriPhotoTaken;
@@ -51,8 +42,8 @@ public class AddPersonFragment extends DialogFragment {
                     }
                     Intent intent = new Intent();
                     intent.setData(imageUri);
-                    activity.setResult(activity.RESULT_OK, intent);
-                    activity.finish();
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
                 break;
             default:
@@ -61,18 +52,19 @@ public class AddPersonFragment extends DialogFragment {
     }
 
 
-    public void takePhoto(View view) {
+    public void t(View view) {
+        Log.d("Ammar","hihihihhi");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(intent.resolveActivity(activity.getPackageManager()) != null) {
+        if(intent.resolveActivity(getPackageManager()) != null) {
             // Save the photo taken to a temporary file.
-            File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
                 File file = File.createTempFile("IMG_", ".jpg", storageDir);
-                mUriPhotoTaken = Uri.fromFile(file);
+                mUriPhotoTaken = FileProvider.getUriForFile(this, "AddPersonActivity", file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriPhotoTaken);
                 startActivityForResult(intent, REQUEST_TAKE_PHOTO);
             } catch (IOException e) {
-
+                e.printStackTrace();
             }
         }
     }
@@ -81,7 +73,7 @@ public class AddPersonFragment extends DialogFragment {
     public void selectImageInAlbum(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+        if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, REQUEST_SELECT_IMAGE_IN_ALBUM);
         }
     }
