@@ -18,8 +18,8 @@ import java.io.IOException;
 
 public class AddPersonActivity extends AppCompatActivity {
 
-    private static final int REQUEST_TAKE_PHOTO = 0 ;
-    private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 1;
+    private static final int REQUEST_TAKE_PHOTO = 1 ;
+    private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 0;
     private Uri mUriPhotoTaken;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
