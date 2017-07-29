@@ -3,16 +3,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
-    <Button
-        android:id="@+id/addPerson"
+    <LinearLayout
+        android:id="@+id/button_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_person"
-        android:onClick="addPerson"
-        android:layout_margin="25dp"
-        />
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
 
     <Button
         android:id="@+id/attendance"
@@ -29,6 +25,14 @@
         android:text="@string/view_history"
         android:onClick="viewHistory"
         android:layout_margin="25dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_students"
+        android:onClick="viewStudents"
+        android:layout_margin="25dp"/>
+        </LinearLayout>
 
 
 </LinearLayout>

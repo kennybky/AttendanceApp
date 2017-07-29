@@ -1,0 +1,27 @@
+<!-- Copyright (c) Microsoft. All rights reserved. -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/item_person"
+    >
+
+    <ImageView
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:scaleType="fitCenter"
+        android:id="@+id/image_person"
+        android:src="@drawable/select_image"
+        android:contentDescription="Student Image" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_person"
+        android:gravity="center"
+        android:text="name"
+        android:layout_toEndOf="@+id/image_person"
+        android:layout_marginStart="10dp" />
+
+
+
+</RelativeLayout>

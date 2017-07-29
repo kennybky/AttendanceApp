@@ -1,24 +1,45 @@
+//
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license.
+//
+// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
+//
+// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
+// https://github.com/Microsoft/Cognitive-Face-Android
+//
+// Copyright (c) Microsoft Corporation
+// All rights reserved.
+//
+// MIT License:
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 package com.jkva.android.attendanceapp;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,14 +60,13 @@ import android.widget.TextView;
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.contract.CreatePersonResult;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class AddPersonActivity extends AppCompatActivity {
+
+public class PersonActivity extends AppCompatActivity {
     // Background task of adding a person to person group.
     class AddPersonTask extends AsyncTask<String, String, String> {
         // Indicate the next step is to add face in this person, or finish editing this person.
@@ -164,8 +184,10 @@ public class AddPersonActivity extends AppCompatActivity {
         setInfo(progress);
     }
 
+    boolean addNewPerson;
     String personId;
     String personGroupId;
+    String oldPersonName;
 
     private static final int REQUEST_SELECT_IMAGE = 0;
 
@@ -177,14 +199,22 @@ public class AddPersonActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_person_activity);
+        setContentView(R.layout.activity_person);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            addNewPerson = bundle.getBoolean("AddNewPerson");
             personGroupId = bundle.getString("PersonGroupId");
+            oldPersonName = bundle.getString("PersonName");
+            if (!addNewPerson) {
+                personId = bundle.getString("PersonId");
+            }
         }
 
         initializeGridView();
+
+        EditText editTextPersonName = (EditText)findViewById(R.id.edit_person_name);
+        editTextPersonName.setText(oldPersonName);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.progress_dialog_title));
@@ -259,20 +289,20 @@ public class AddPersonActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-
+        outState.putBoolean("AddNewPerson", addNewPerson);
         outState.putString("PersonId", personId);
         outState.putString("PersonGroupId", personGroupId);
-
+        outState.putString("OldPersonName", oldPersonName);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-
+        addNewPerson = savedInstanceState.getBoolean("AddNewPerson");
         personId = savedInstanceState.getString("PersonId");
         personGroupId = savedInstanceState.getString("PersonGroupId");
-
+        oldPersonName = savedInstanceState.getString("OldPersonName");
     }
 
     public void doneAndSave(View view) {
@@ -296,11 +326,11 @@ public class AddPersonActivity extends AppCompatActivity {
         EditText editTextPersonName = (EditText)findViewById(R.id.edit_person_name);
         String newPersonName = editTextPersonName.getText().toString();
         if (newPersonName.equals("")) {
-            textWarning.setText("Person name cat be empty");
+            textWarning.setText("Person name cannot be empty");
             return;
         }
 
-        StorageHelper.setPersonName(personId, newPersonName, personGroupId, AddPersonActivity.this);
+        StorageHelper.setPersonName(personId, newPersonName, personGroupId, PersonActivity.this);
 
         finish();
     }
@@ -374,7 +404,7 @@ public class AddPersonActivity extends AppCompatActivity {
             faceIdList = new ArrayList<>();
             faceChecked = new ArrayList<>();
 
-            Set<String> faceIdSet = StorageHelper.getAllFaceIds(personId, AddPersonActivity.this);
+            Set<String> faceIdSet = StorageHelper.getAllFaceIds(personId, PersonActivity.this);
             for (String faceId: faceIdSet) {
                 faceIdList.add(faceId);
                 faceChecked.add(false);
@@ -408,7 +438,7 @@ public class AddPersonActivity extends AppCompatActivity {
             convertView.setId(position);
 
             Uri uri = Uri.parse(StorageHelper.getFaceUri(
-                    faceIdList.get(position), AddPersonActivity.this));
+                    faceIdList.get(position), PersonActivity.this));
             ((ImageView)convertView.findViewById(R.id.image_face)).setImageURI(uri);
 
             // set the checked status of the item

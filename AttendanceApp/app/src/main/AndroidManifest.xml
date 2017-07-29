@@ -23,19 +23,36 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddPersonGroupActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity android:name=".PersonGroupActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".AddPersonActivity"
             android:label="@string/title_activity_add_person"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".AddFaceToPersonActivity"
+            android:label="@string/title_activity_add_person"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".PersonListActivity"
+            android:label="@string/title_activity_list_person"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".SelectImageActivity"
+            android:label="@string/title_activity_list_person"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".PersonActivity"
+            android:label="@string/title_activity_list_person"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <provider
             android:name=".GenericFileProvider"
             android:authorities="com.jkva.android.provider"

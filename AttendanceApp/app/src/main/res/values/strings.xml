@@ -8,4 +8,13 @@
     <string name="add_person">Add New Student</string>
     <string name="view_history">View History</string>
     <string name="title_activity_add_person">AddPersonActivity</string>
+    <string name="user_provided_description_data">Person Description</string>
+    <string name="progress_dialog_title">Please Wait</string>
+    <string name="select_face_tip">Select this person\\\'s faces (if exist) by click on the checkbox</string>
+    <string name="done_and_save">Finish</string>
+    <string name="delete">Delete</string>
+    <string name="user_provided_person_name">person name</string>
+    <string name="view_students">View Students</string>
+    <string name="title_activity_list_person">Students</string>
+    <string name="add_face">Add Face</string>
 </resources>
