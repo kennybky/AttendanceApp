@@ -90,6 +90,7 @@ public class SelectImageActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.setData(mUriPhotoTaken);
                     setResult(RESULT_OK, intent);
+                    finish();
                 }
                 break;
             case REQUEST_SELECT_IMAGE_IN_ALBUM:
@@ -103,14 +104,12 @@ public class SelectImageActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.setData(imageUri);
                     setResult(RESULT_OK, intent);
+                    finish();
                 }
                 break;
             default:
                 break;
         }
-        ImageView img=(ImageView) findViewById(R.id.img);
-        Log.d("hello66",mUriPhotoTaken+" ");
-        img.setImageURI(mUriPhotoTaken);
     }
 
     // When the button of "Take a Photo with Camera" is pressed.
@@ -122,8 +121,7 @@ public class SelectImageActivity extends AppCompatActivity {
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
                 File file = File.createTempFile("IMG_", ".jpg", storageDir);
-                mUriPhotoTaken = FileProvider.getUriForFile(this, "com.jkva.android.provider", file);
-                Log.d("hello67",mUriPhotoTaken+" ");
+                mUriPhotoTaken = FileProvider.getUriForFile(this, "com.jkva.android.provider", file);;
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriPhotoTaken);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivityForResult(intent, REQUEST_TAKE_PHOTO);
