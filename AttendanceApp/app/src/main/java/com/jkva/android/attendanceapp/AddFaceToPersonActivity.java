@@ -133,6 +133,7 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
         @Override
         protected Face[] doInBackground(InputStream... params) {
             // Get an instance of face service client to detect faces in image.
+            Log.d("hello79","Detecting ");
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
             try{
                 publishProgress("Detecting...");
@@ -262,6 +263,7 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
             mPersonId = bundle.getString("PersonId");
             mPersonGroupId = bundle.getString("PersonGroupId");
             mImageUriStr = bundle.getString("ImageUriStr");
+            Log.d("hello76",mImageUriStr+" ");
         }
 
         mProgressDialog = new ProgressDialog(this);
@@ -291,10 +293,14 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+
         Uri imageUri = Uri.parse(mImageUriStr);
+        Log.d("hello12",imageUri+" hi");
         mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
                 imageUri, getContentResolver());
         if (mBitmap != null) {
+            Log.d("hello11"," hi");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             InputStream imageInputStream = new ByteArrayInputStream(stream.toByteArray());
