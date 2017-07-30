@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/person_name"
             android:layout_toEndOf="@id/person_name"
-            android:singleLine="true"
+           android:maxLines="1"
             android:maxLength="30"
             android:hint="" />
 

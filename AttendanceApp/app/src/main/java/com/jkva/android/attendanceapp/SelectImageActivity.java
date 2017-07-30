@@ -42,7 +42,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -88,7 +90,6 @@ public class SelectImageActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.setData(mUriPhotoTaken);
                     setResult(RESULT_OK, intent);
-                    finish();
                 }
                 break;
             case REQUEST_SELECT_IMAGE_IN_ALBUM:
@@ -97,17 +98,19 @@ public class SelectImageActivity extends AppCompatActivity {
                     if (data == null || data.getData() == null) {
                         imageUri = mUriPhotoTaken;
                     } else {
-                        imageUri = data.getData();
+                        mUriPhotoTaken= imageUri = data.getData();
                     }
                     Intent intent = new Intent();
                     intent.setData(imageUri);
                     setResult(RESULT_OK, intent);
-                    finish();
                 }
                 break;
             default:
                 break;
         }
+        ImageView img=(ImageView) findViewById(R.id.img);
+        Log.d("hello66",mUriPhotoTaken+" ");
+        img.setImageURI(mUriPhotoTaken);
     }
 
     // When the button of "Take a Photo with Camera" is pressed.
@@ -120,6 +123,7 @@ public class SelectImageActivity extends AppCompatActivity {
             try {
                 File file = File.createTempFile("IMG_", ".jpg", storageDir);
                 mUriPhotoTaken = FileProvider.getUriForFile(this, "com.jkva.android.provider", file);
+                Log.d("hello67",mUriPhotoTaken+" ");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriPhotoTaken);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivityForResult(intent, REQUEST_TAKE_PHOTO);

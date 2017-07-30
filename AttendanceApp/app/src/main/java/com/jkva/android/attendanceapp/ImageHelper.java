@@ -43,7 +43,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 
 import com.microsoft.projectoxford.face.contract.Face;
 import com.microsoft.projectoxford.face.contract.FaceRectangle;
@@ -108,6 +110,7 @@ public class ImageHelper {
 
             return rotateBitmap(bitmap, getImageRotationAngle(imageUri, contentResolver));
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -238,19 +241,21 @@ public class ImageHelper {
     }
 
     // Get the rotation angle of the image taken.
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private static int getImageRotationAngle(
             Uri imageUri, ContentResolver contentResolver) throws IOException {
         int angle = 0;
         Cursor cursor = contentResolver.query(imageUri,
                 new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
-        if (cursor != null) {
+        if (cursor != null && cursor.getColumnCount() >0 ) {
             if (cursor.getCount() == 1) {
                 cursor.moveToFirst();
                 angle = cursor.getInt(0);
             }
             cursor.close();
         } else {
-            ExifInterface exif = new ExifInterface(imageUri.getPath());
+            InputStream is = contentResolver.openInputStream(imageUri);
+            ExifInterface exif = new ExifInterface(is);
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 

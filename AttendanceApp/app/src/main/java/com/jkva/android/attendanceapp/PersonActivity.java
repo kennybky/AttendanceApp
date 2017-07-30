@@ -40,6 +40,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -343,11 +344,13 @@ public class PersonActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("hello1",requestCode+" "+resultCode);
         switch (requestCode)
         {
             case REQUEST_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
                     Uri uriImagePicked = data.getData();
+                    Log.d("hello2",uriImagePicked+" ");
                     Intent intent = new Intent(this, AddFaceToPersonActivity.class);
                     intent.putExtra("PersonId", personId);
                     intent.putExtra("PersonGroupId", personGroupId);
