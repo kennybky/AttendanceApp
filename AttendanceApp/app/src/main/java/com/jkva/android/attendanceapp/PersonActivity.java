@@ -212,76 +212,14 @@ public class PersonActivity extends AppCompatActivity {
             }
         }
 
-        initializeGridView();
+        GridView gridview = (GridView) findViewById(R.id.gridView_faces);
+        gridview.setAdapter(new FaceGridViewAdapter());
 
-        EditText editTextPersonName = (EditText)findViewById(R.id.edit_person_name);
+        EditText editTextPersonName = (EditText) findViewById(R.id.edit_person_name);
         editTextPersonName.setText(oldPersonName);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.progress_dialog_title));
-    }
-
-    private void initializeGridView() {
-        GridView gridView = (GridView) findViewById(R.id.gridView_faces);
-
-        gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
-        gridView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-            @Override
-            public void onItemCheckedStateChanged(
-                    ActionMode mode, int position, long id, boolean checked) {
-                faceGridViewAdapter.faceChecked.set(position, checked);
-
-                GridView gridView = (GridView) findViewById(R.id.gridView_faces);
-                gridView.setAdapter(faceGridViewAdapter);
-            }
-
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.menu_delete_items, menu);
-
-                faceGridViewAdapter.longPressed = true;
-
-                GridView gridView = (GridView) findViewById(R.id.gridView_faces);
-                gridView.setAdapter(faceGridViewAdapter);
-
-                Button addNewItem = (Button) findViewById(R.id.add_face);
-                addNewItem.setEnabled(false);
-
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_delete_items:
-                        deleteSelectedItems();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                faceGridViewAdapter.longPressed = false;
-
-                for (int i = 0; i < faceGridViewAdapter.faceChecked.size(); ++i) {
-                    faceGridViewAdapter.faceChecked.set(i, false);
-                }
-
-                GridView gridView = (GridView) findViewById(R.id.gridView_faces);
-                gridView.setAdapter(faceGridViewAdapter);
-
-                Button addNewItem = (Button) findViewById(R.id.add_face);
-                addNewItem.setEnabled(true);
-            }
-        });
     }
 
 
@@ -294,6 +232,13 @@ public class PersonActivity extends AppCompatActivity {
         outState.putString("PersonId", personId);
         outState.putString("PersonGroupId", personGroupId);
         outState.putString("OldPersonName", oldPersonName);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GridView gridview = (GridView) findViewById(R.id.gridView_faces);
+        gridview.setAdapter(new FaceGridViewAdapter());
     }
 
     @Override
@@ -402,6 +347,7 @@ public class PersonActivity extends AppCompatActivity {
         List<Boolean> faceChecked;
         boolean longPressed;
 
+
         FaceGridViewAdapter() {
             longPressed = false;
             faceIdList = new ArrayList<>();
@@ -432,35 +378,22 @@ public class PersonActivity extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             // set the item view
+           ImageView imageView;
             if (convertView == null) {
-                LayoutInflater layoutInflater
-                        = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = layoutInflater.inflate(
-                        R.layout.item_face_with_checkbox, parent, false);
+                // if it's not recycled, initialize some attributes
+                imageView = new ImageView(parent.getContext());
+                imageView.setLayoutParams(new GridView.LayoutParams(350, 350));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setPadding(8, 8, 8, 8);
+            } else {
+                imageView = (ImageView) convertView;
             }
-            convertView.setId(position);
 
             Uri uri = Uri.parse(StorageHelper.getFaceUri(
                     faceIdList.get(position), PersonActivity.this));
-            ((ImageView)convertView.findViewById(R.id.image_face)).setImageURI(uri);
+            imageView.setImageURI(uri);
 
-            // set the checked status of the item
-            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox_face);
-            if (longPressed) {
-                checkBox.setVisibility(View.VISIBLE);
-
-                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        faceChecked.set(position, isChecked);
-                    }
-                });
-                checkBox.setChecked(faceChecked.get(position));
-            } else {
-                checkBox.setVisibility(View.INVISIBLE);
-            }
-
-            return convertView;
+            return imageView;
         }
     }
 }

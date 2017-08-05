@@ -71,6 +71,7 @@ public class ImageHelper {
     //     (2) more than the actual max size length of the bitmap
     //     then return the original bitmap
     // Else, return the scaled bitmap
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static Bitmap loadSizeLimitedBitmapFromUri(
             Uri imageUri,
             ContentResolver contentResolver) {

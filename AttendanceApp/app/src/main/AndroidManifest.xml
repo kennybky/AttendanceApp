@@ -53,6 +53,11 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+        <activity
+            android:name=".IdentificationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <provider
             android:name=".GenericFileProvider"
             android:authorities="com.jkva.android.provider"

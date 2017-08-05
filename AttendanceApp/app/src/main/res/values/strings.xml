@@ -17,4 +17,5 @@
     <string name="view_students">View Students</string>
     <string name="title_activity_list_person">Students</string>
     <string name="add_face">Add Face</string>
+    <string name="select_image">Select Image</string>
 </resources>

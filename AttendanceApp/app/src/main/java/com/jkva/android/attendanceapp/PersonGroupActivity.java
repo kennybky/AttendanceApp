@@ -43,7 +43,10 @@ public class PersonGroupActivity extends AppCompatActivity {
     }
 
     public void takeAttendance(View view) {
-
+        Intent intent=new Intent(this, IdentificationActivity.class);
+        intent.putExtra("PersonGroupId", groupId);
+        intent.putExtra("PersonGroupName", groupName);
+        startActivity(intent);
     }
 
     public void viewHistory(View view) {
