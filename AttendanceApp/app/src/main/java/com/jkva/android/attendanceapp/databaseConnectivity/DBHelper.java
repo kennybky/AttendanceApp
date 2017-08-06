@@ -22,9 +22,9 @@ public class DBHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         String queryString = "CREATE TABLE " + Contract.TABLE_ATTENDANCE.TABLE_NAME + " ("+
                 Contract.TABLE_ATTENDANCE._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                Contract.TABLE_ATTENDANCE.COLUMN_NAME_STUDENT_NAME + " TEXT," +
-                Contract.TABLE_ATTENDANCE.COLUMN_NAME_CLASS_NAME + " TEXT," +
-                Contract.TABLE_ATTENDANCE.COLUMN_NAME_DATE + " DATE CURRENT_TIMESTAMP " + "); ";
+                Contract.TABLE_ATTENDANCE.COLUMN_NAME_STUDENT_NAME + " TEXT NOT NULL," +
+                Contract.TABLE_ATTENDANCE.COLUMN_NAME_CLASS_NAME + " TEXT NOT NULL," +
+                Contract.TABLE_ATTENDANCE.COLUMN_NAME_DATE + " TEXT NOT NULL " + "); ";
         Log.d(TAG, "Create table SQL: " + queryString);
         db.execSQL(queryString);
     }

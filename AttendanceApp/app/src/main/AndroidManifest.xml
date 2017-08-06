@@ -22,52 +22,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddPersonGroupActivity">
-        </activity>
-        <activity android:name=".PersonGroupActivity">
-        </activity>
+        <activity android:name=".AddPersonGroupActivity"></activity>
+        <activity android:name=".PersonGroupActivity"></activity>
         <activity
             android:name=".AddPersonActivity"
             android:label="@string/title_activity_add_person"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".AddFaceToPersonActivity"
             android:label="@string/title_activity_add_person"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".PersonListActivity"
             android:label="@string/title_activity_list_person"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".SelectImageActivity"
             android:label="@string/title_activity_list_person"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".PersonActivity"
             android:label="@string/title_activity_list_person"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".IdentificationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        </activity>
-        <provider
-            android:name=".GenericFileProvider"
-            android:authorities="com.jkva.android.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-        </provider>
-
+        <activity android:name=".HistoryActivity"></activity>
     </application>
 
 </manifest>
