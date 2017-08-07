@@ -121,7 +121,8 @@ public class SelectImageActivity extends AppCompatActivity {
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
                 File file = File.createTempFile("IMG_", ".jpg", storageDir);
-                mUriPhotoTaken = FileProvider.getUriForFile(this, "com.jkva.android.provider", file);;
+                mUriPhotoTaken = FileProvider.getUriForFile(this, "com.jkva.android.provider", file);
+                Log.d("hello67",mUriPhotoTaken+" ");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriPhotoTaken);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivityForResult(intent, REQUEST_TAKE_PHOTO);

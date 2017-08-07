@@ -91,7 +91,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
 
                 for (Integer index: mFaceIndices) {
                     FaceRectangle faceRect = mFaceGridViewAdapter.faceRectList.get(index);
-                    Log.d("AddFaceToPerson", "Request: Adding face to person " + mPersonId);
                     // Start the request to add face.
                     AddPersistedFaceResult result = faceServiceClient.addPersonFace(
                             mPersonGroupId,
@@ -105,7 +104,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
                 return true;
             } catch (Exception e) {
                 publishProgress(e.getMessage());
-                Log.d("AddFaceToPerson", e.getMessage());
                 e.printStackTrace();
                 return false;
             }
@@ -135,7 +133,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
         @Override
         protected Face[] doInBackground(InputStream... params) {
             // Get an instance of face service client to detect faces in image.
-            Log.d("hello79","Detecting ");
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
             try{
                 publishProgress("Detecting...");
@@ -151,7 +148,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
             }  catch (Exception e) {
                 mSucceed = false;
                 publishProgress(e.getMessage());
-                Log.d("AddFaceToPersonActivity",e.getMessage());
                 return null;
             }
         }
@@ -265,7 +261,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
             mPersonId = bundle.getString("PersonId");
             mPersonGroupId = bundle.getString("PersonGroupId");
             mImageUriStr = bundle.getString("ImageUriStr");
-            Log.d("hello76",mImageUriStr+" ");
         }
 
         mProgressDialog = new ProgressDialog(this);
@@ -295,19 +290,13 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-
-
         Uri imageUri = Uri.parse(mImageUriStr);
-        Log.d("hello12",imageUri+" hi");
         mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
                 imageUri, getContentResolver());
         if (mBitmap != null) {
-            Log.d("hello11"," hi");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             InputStream imageInputStream = new ByteArrayInputStream(stream.toByteArray());
-            Log.d("AddFaceToPerson", "Request: Detecting " + mImageUriStr);
             new DetectionTask().execute(imageInputStream);
         }
     }

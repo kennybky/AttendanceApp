@@ -1,5 +1,6 @@
 <resources>
 
+
     <string name="subscription_key">bcc0c5fcfc354afca10adc86a19589b8</string>
     <string name="endpoint">https://westcentralus.api.cognitive.microsoft.com/face/v1.0</string>
     <string name="app_name">AttendanceApp</string>
@@ -18,4 +19,7 @@
     <string name="title_activity_list_person">Students</string>
     <string name="add_face">Add Face</string>
     <string name="select_image">Select Image</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

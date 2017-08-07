@@ -35,6 +35,8 @@ package com.jkva.android.attendanceapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -53,6 +55,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jkva.android.attendanceapp.databaseConnectivity.DBHelper;
+import com.jkva.android.attendanceapp.databaseConnectivity.DatabaseUtils;
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.contract.Face;
 import com.microsoft.projectoxford.face.contract.IdentifyResult;
@@ -84,6 +88,7 @@ public class IdentificationActivity extends AppCompatActivity {
 
         @Override
         protected IdentifyResult[] doInBackground(UUID... params) {
+            db= new DBHelper(IdentificationActivity.this).getReadableDatabase();
             String logString = "Request: Identifying faces ";
             for (UUID faceId: params) {
                 logString += faceId.toString() + ", ";
@@ -146,6 +151,9 @@ public class IdentificationActivity extends AppCompatActivity {
 
     PersonGroupListAdapter mPersonGroupListAdapter;
 
+    SQLiteDatabase db;
+    String className;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,8 +188,15 @@ public class IdentificationActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        db.close();
+        super.onDestroy();
+    }
+
     void setPersonGroupSelected(int position) {
         TextView textView = (TextView) findViewById(R.id.text_person_group_selected);
+
         if (position > 0) {
             String personGroupIdSelected = mPersonGroupListAdapter.personGroupIdList.get(position);
             mPersonGroupListAdapter.personGroupIdList.set(
@@ -201,6 +216,7 @@ public class IdentificationActivity extends AppCompatActivity {
             refreshIdentifyButtonEnabledStatus();
             textView.setTextColor(Color.BLACK);
             textView.setText(String.format("Person group to use: %s", personGroupName));
+            className = personGroupName;
         }
     }
 
@@ -516,6 +532,7 @@ public class IdentificationActivity extends AppCompatActivity {
                             mIdentifyResults.get(position).candidates.get(0).confidence);
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             identity);
+                    DatabaseUtils.insert(db, className, personName);
                 } else {
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             "Face cant be identified");
