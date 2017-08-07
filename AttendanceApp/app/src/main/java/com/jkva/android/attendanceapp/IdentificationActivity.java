@@ -545,7 +545,7 @@ public class IdentificationActivity extends AppCompatActivity {
 
     private IdentifyResult[] idResults;
     public void idResult(View view){
-        
+
 
     }
 
