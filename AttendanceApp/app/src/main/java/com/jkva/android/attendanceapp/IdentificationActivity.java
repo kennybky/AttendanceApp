@@ -397,8 +397,6 @@ public class IdentificationActivity extends AppCompatActivity {
 
     // Set whether the buttons are enabled.
     private void setAllButtonsEnabledStatus(boolean isEnabled) {
-        Button selectImageButton = (Button) findViewById(R.id.manage_person_groups);
-        selectImageButton.setEnabled(isEnabled);
 
         Button groupButton = (Button) findViewById(R.id.select_image);
         groupButton.setEnabled(isEnabled);
@@ -406,8 +404,6 @@ public class IdentificationActivity extends AppCompatActivity {
         Button identifyButton = (Button) findViewById(R.id.identify);
         identifyButton.setEnabled(isEnabled);
 
-        Button viewLogButton = (Button) findViewById(R.id.view_log);
-        viewLogButton.setEnabled(isEnabled);
     }
 
     // Set the group button is enabled or not.

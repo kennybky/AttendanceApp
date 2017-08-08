@@ -103,14 +103,6 @@
             android:onClick="identify"
             style="@style/ButtonStyle" />
 
-        <Button
-            android:id="@+id/view_log"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="View Log"
-            android:onClick="viewLog"
-            style="@style/ButtonStyle" />
 
         <Button
             android:id="@+id/id_result"
