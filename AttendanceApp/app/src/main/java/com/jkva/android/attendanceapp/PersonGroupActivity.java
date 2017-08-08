@@ -50,6 +50,8 @@ public class PersonGroupActivity extends AppCompatActivity {
     }
 
     public void viewHistory(View view) {
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
     }
 
     public void viewStudents(View view) {
