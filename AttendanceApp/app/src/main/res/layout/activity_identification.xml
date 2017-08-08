@@ -62,60 +62,6 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="@dimen/view_margin">
-
-            <RelativeLayout
-                android:id="@+id/person_group_control"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/view_margin"
-                android:layout_marginEnd="@dimen/view_margin" >
-
-                <TextView
-                    android:id="@+id/text_person_group_selected"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="person groups" />
-
-                <Button
-                    android:id="@+id/manage_person_groups"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/text_person_group_selected"
-                    android:layout_marginTop="@dimen/view_margin"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="manage_person_groups"
-                    android:onClick="managePersonGroups"
-                    style="@style/ButtonStyle" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/person_group_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toRightOf="@id/person_group_control"
-                android:layout_toEndOf="@id/person_group_control" >
-
-                <ListView
-                    android:id="@+id/list_person_groups_identify"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#E0E0E0"
-                    android:verticalSpacing="@dimen/view_margin" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

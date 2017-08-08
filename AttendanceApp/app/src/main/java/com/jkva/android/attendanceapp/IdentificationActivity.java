@@ -41,6 +41,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -139,18 +140,22 @@ public class IdentificationActivity extends AppCompatActivity {
     }
 
     String mPersonGroupId;
+    String mPersonGroupName;
 
     boolean detected;
 
     FaceListAdapter mFaceListAdapter;
 
-    PersonGroupListAdapter mPersonGroupListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identification);
-
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mPersonGroupId = bundle.getString("PersonGroupId");
+            mPersonGroupName = bundle.getString("PersonGroupName");
+        }
         detected = false;
 
         progressDialog = new ProgressDialog(this);
@@ -160,49 +165,27 @@ public class IdentificationActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("PersonGroupId", mPersonGroupId);
+        outState.putString("PersonGroupName", mPersonGroupName);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+       mPersonGroupId = savedInstanceState.getString("PersonGroupId");
+        mPersonGroupName = savedInstanceState.getString("PersonGroupName");
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-
-        ListView listView = (ListView) findViewById(R.id.list_person_groups_identify);
-        mPersonGroupListAdapter = new PersonGroupListAdapter();
-        listView.setAdapter(mPersonGroupListAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setPersonGroupSelected(position);
-            }
-        });
-
-        if (mPersonGroupListAdapter.personGroupIdList.size() != 0) {
-            setPersonGroupSelected(0);
-        } else {
-            setPersonGroupSelected(-1);
-        }
     }
 
-    void setPersonGroupSelected(int position) {
-        TextView textView = (TextView) findViewById(R.id.text_person_group_selected);
-        if (position > 0) {
-            String personGroupIdSelected = mPersonGroupListAdapter.personGroupIdList.get(position);
-            mPersonGroupListAdapter.personGroupIdList.set(
-                    position, mPersonGroupListAdapter.personGroupIdList.get(0));
-            mPersonGroupListAdapter.personGroupIdList.set(0, personGroupIdSelected);
-            ListView listView = (ListView) findViewById(R.id.list_person_groups_identify);
-            listView.setAdapter(mPersonGroupListAdapter);
-            setPersonGroupSelected(0);
-        } else if (position < 0) {
-            setIdentifyButtonEnabledStatus(false);
-            textView.setTextColor(Color.RED);
-            textView.setText("No group selected!");
-        } else {
-            mPersonGroupId = mPersonGroupListAdapter.personGroupIdList.get(0);
-            String personGroupName = StorageHelper.getPersonGroupName(
-                    mPersonGroupId, IdentificationActivity.this);
-            refreshIdentifyButtonEnabledStatus();
-            textView.setTextColor(Color.BLACK);
-            textView.setText(String.format("Person group to use: %s", personGroupName));
-        }
-    }
 
     private void setUiBeforeBackgroundTask() {
         progressDialog.show();
@@ -532,71 +515,4 @@ public class IdentificationActivity extends AppCompatActivity {
 
     }
 
-
-
-    // The adapter of the ListView which contains the person groups.
-    private class PersonGroupListAdapter extends BaseAdapter {
-        List<String> personGroupIdList;
-
-        // Initialize with detection result.
-        PersonGroupListAdapter() {
-            personGroupIdList = new ArrayList<>();
-
-            Set<String> personGroupIds
-                    = StorageHelper.getAllPersonGroupIds(IdentificationActivity.this);
-
-            for (String personGroupId: personGroupIds) {
-                personGroupIdList.add(personGroupId);
-                if (mPersonGroupId != null && personGroupId.equals(mPersonGroupId)) {
-                    personGroupIdList.set(
-                            personGroupIdList.size() - 1,
-                            mPersonGroupListAdapter.personGroupIdList.get(0));
-                    mPersonGroupListAdapter.personGroupIdList.set(0, personGroupId);
-                }
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return personGroupIdList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return personGroupIdList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                LayoutInflater layoutInflater =
-                        (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = layoutInflater.inflate(R.layout.item_person_group, parent, false);
-            }
-            convertView.setId(position);
-
-            // set the text of the item
-            String personGroupName = StorageHelper.getPersonGroupName(
-                    personGroupIdList.get(position), IdentificationActivity.this);
-            int personNumberInGroup = StorageHelper.getAllPersonIds(
-                    personGroupIdList.get(position), IdentificationActivity.this).size();
-            ((TextView)convertView.findViewById(R.id.text_person_group)).setText(
-                    String.format(
-                            "%s (Person count: %d)",
-                            personGroupName,
-                            personNumberInGroup));
-
-            if (position == 0) {
-                ((TextView)convertView.findViewById(R.id.text_person_group)).setTextColor(
-                        Color.parseColor("#3399FF"));
-            }
-
-            return convertView;
-        }
-    }
 }
