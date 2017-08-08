@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class IdentificationActivity extends AppCompatActivity {
 
         @Override
         protected IdentifyResult[] doInBackground(UUID... params) {
-            db= new DBHelper(IdentificationActivity.this).getReadableDatabase();
+            db= new DBHelper(IdentificationActivity.this).getWritableDatabase();
             String logString = "Request: Identifying faces ";
             for (UUID faceId: params) {
                 logString += faceId.toString() + ", ";
@@ -510,7 +511,9 @@ public class IdentificationActivity extends AppCompatActivity {
                             mIdentifyResults.get(position).candidates.get(0).confidence);
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             identity);
+                    className = mPersonGroupName;
                     DatabaseUtils.insert(db, className, personName);
+                    Log.d("database", className + " " + personName+ " inserted");
                 } else {
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             "Face cant be identified");

@@ -49,6 +49,15 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity android:name=".HistoryActivity"></activity>
+        <provider
+            android:name=".GenericFileProvider"
+            android:authorities="com.jkva.android.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>
