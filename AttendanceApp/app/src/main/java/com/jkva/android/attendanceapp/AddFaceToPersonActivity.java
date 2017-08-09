@@ -48,7 +48,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // Get an instance of face service client to detect faces in image.
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
             try{
                 publishProgress("Adding face...");
@@ -104,7 +103,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
             // Get an instance of face service client to detect faces in image.
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
             try{
-                publishProgress("Detecting...");
 
                 // Start detection.
                 return faceServiceClient.detect(
@@ -189,12 +187,10 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
         }
     }
 
-    // Show the result on screen when detection is done.
     private void setUiAfterDetection(Face[] result, boolean succeed) {
         mProgressDialog.dismiss();
 
         if (succeed) {
-            // Set the information about the detection result.
             if (result != null) {
                 setInfo(result.length + " face"
                         + (result.length != 1 ? "s" : "") + " detected");
@@ -202,10 +198,8 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
                 setInfo("0 face detected");
             }
 
-            // Set the adapter of the ListView which contains the details of the detected faces.
             mFaceGridViewAdapter = new FaceGridViewAdapter(result);
 
-            // Show the detailed list of detected faces.
             GridView gridView = (GridView) findViewById(R.id.gridView_faces_to_select);
             gridView.setAdapter(mFaceGridViewAdapter);
         }
@@ -313,7 +307,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
                 List<Face> faces = Arrays.asList(detectionResult);
                 for (Face face : faces) {
                     try {
-                        // Crop face thumbnail with five main landmarks drawn from original image.
                         faceThumbnails.add(ImageHelper.generateFaceThumbnail(
                                 mBitmap, face.faceRectangle));
 
@@ -322,7 +315,6 @@ public class AddFaceToPersonActivity extends AppCompatActivity {
 
                         faceChecked.add(false);
                     } catch (IOException e) {
-                        // Show the exception when generating face thumbnail fails.
                         setInfo(e.getMessage());
                     }
                 }

@@ -66,18 +66,12 @@ public class PersonListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            setUiBeforeBackgroundTask();
-        }
-
-        @Override
         protected void onProgressUpdate(String... progress) {
             setUiDuringBackgroundTask(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
             if (result != null) {
                 addLog("Response: Success. Group " + result + " training completed");
@@ -111,18 +105,12 @@ public class PersonListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            setUiBeforeBackgroundTask();
-        }
-
-        @Override
         protected void onProgressUpdate(String... progress) {
             setUiDuringBackgroundTask(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
             if (result != null) {
                 setInfo("Person " + result + " successfully deleted");
@@ -131,13 +119,8 @@ public class PersonListActivity extends AppCompatActivity {
         }
     }
 
-    private void setUiBeforeBackgroundTask() {
-        progressDialog.show();
-    }
-
     // Show the status of background detection task on screen.
     private void setUiDuringBackgroundTask(String progress) {
-        progressDialog.setMessage(progress);
 
         setInfo(progress);
     }
@@ -157,9 +140,6 @@ public class PersonListActivity extends AppCompatActivity {
     String personGroupId;
 
     PersonGridViewAdapter personGridViewAdapter;
-
-    // Progress dialog popped up when communicating with server.
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,10 +168,6 @@ public class PersonListActivity extends AppCompatActivity {
 
         EditText editTextPersonGroupName = (EditText)findViewById(R.id.edit_person_group_name);
         editTextPersonGroupName.setText(personGroupName);
-
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(getString(R.string.progress_dialog_title));
 
     }
 

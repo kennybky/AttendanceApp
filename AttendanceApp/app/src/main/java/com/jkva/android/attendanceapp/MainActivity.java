@@ -49,21 +49,12 @@ public class MainActivity extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
 
-                // Should we show an explanation?
                 if (shouldShowRequestPermissionRationale(
                         Manifest.permission.CAMERA)) {
-                    // Explain to the user why we need to read the contacts
                 }
 
                 requestPermissions(new String[]{Manifest.permission.CAMERA},
                         9982);
-
-
-
-                // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-                // app-defined int constant that should be quite unique
-
-
             }
         }
     }
@@ -82,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addPersonGroup(View view){
         Intent intent = new Intent(this, AddPersonGroupActivity.class);
-        startActivityForResult(intent,1);
+        startActivity(intent);
     }
 
     private class PersonGroupsListAdapter extends RecyclerView.Adapter<PersonGroupsListAdapter.ItemHolder> {
@@ -95,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             Set<String> personGroupIds = StorageHelper.getAllPersonGroupIds(MainActivity.this);
             for (String personGroupId: personGroupIds) {
                 personGroupIdList.add(personGroupId);
-                Log.d("Mylist", personGroupId+"  k");
             }
         }
         @Override
@@ -140,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                         personGroupIdList.get(pos), MainActivity.this).size();
 
                 personGroupId = personGroupIdList.get(pos);
-                Log.d("My", personGroupId+" "+personNumberInGroup);
                 textView.setText(String.format("%s (Person count: %d)", personGroupName, personNumberInGroup));
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

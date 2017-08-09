@@ -16,7 +16,6 @@ import java.util.UUID;
 
 public class AddPersonGroupActivity extends AppCompatActivity {
 
-    private ProgressDialog progressDialog;
     EditText groupName;
     String name;
     String personGroupId;
@@ -27,17 +26,15 @@ public class AddPersonGroupActivity extends AppCompatActivity {
         setContentView(R.layout.add_person_group);
         groupName=(EditText) findViewById(R.id.add_person_group_name);
         personGroupId = UUID.randomUUID().toString();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("please wait..");
 
     }
 
     public void addPersonGroup(View view) {
-    if(groupName.getText().equals("")) return;
+        if(groupName.getText().equals("")) return;
         else {
-        name = groupName.getText().toString();
-        new AddPersonGroupTask().execute(personGroupId);
-    }
+            name = groupName.getText().toString();
+            new AddPersonGroupTask().execute(personGroupId);
+        }
     }
 
     class AddPersonGroupTask extends AsyncTask<String, String, String> {
@@ -45,17 +42,8 @@ public class AddPersonGroupActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            Log.d("AddPersonGroupActivity", "Request: Creating person group " + params[0]);
-
-            // Get an instance of face service client.
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
-            if (faceServiceClient == null) {
-                Log.d("AddPersonGroupActivity", "faceserviceclient not initialized!");
-            }
             try{
-                publishProgress("Syncing with server to add person group...");
-
-                // Start creating person group in server.
                 faceServiceClient.createPersonGroup(
                         params[0],
                         "Group Name",
@@ -63,25 +51,13 @@ public class AddPersonGroupActivity extends AppCompatActivity {
 
                 return params[0];
             } catch (Exception e) {
-                publishProgress(e.getMessage());
                 Log.d("AddPersonGroupActivity", e.getMessage());
                 return null;
             }
         }
 
         @Override
-        protected void onPreExecute() {
-            progressDialog.show();
-        }
-
-        @Override
-        protected void onProgressUpdate(String... progress) {
-            progressDialog.setMessage(progress[0]);
-        }
-
-        @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
                 if(result !=null) {
                     Log.d("AddPersonGroupActivity", "Response: Success. Person group " + result + " created");
