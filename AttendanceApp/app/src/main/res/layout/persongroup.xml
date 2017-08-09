@@ -17,22 +17,25 @@
         android:text="@string/take_attendance"
         android:onClick="takeAttendance"
         android:layout_margin="25dp"
-        />
+        style="@style/ButtonStyle"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/view_history"
         android:onClick="viewHistory"
-        android:layout_margin="25dp"/>
+        android:layout_margin="25dp"
+        style="@style/ButtonStyle"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/view_students"
         android:onClick="viewStudents"
-        android:layout_margin="25dp"/>
-        </LinearLayout>
+        android:layout_margin="25dp"
+        style="@style/ButtonStyle"/>
+
+    </LinearLayout>
 
 
 </LinearLayout>

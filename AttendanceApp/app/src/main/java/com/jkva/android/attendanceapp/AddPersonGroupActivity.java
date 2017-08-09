@@ -14,10 +14,6 @@ import com.microsoft.projectoxford.face.FaceServiceClient;
 
 import java.util.UUID;
 
-/**
- * Created by kenny on 7/18/2017.
- */
-
 public class AddPersonGroupActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;

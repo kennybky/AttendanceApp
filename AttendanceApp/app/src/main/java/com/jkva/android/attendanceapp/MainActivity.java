@@ -9,6 +9,9 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,12 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
     private PersonGroupsListAdapter personGroupsListAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializeListView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA)
@@ -69,95 +70,92 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        ListView listView = (ListView) findViewById(R.id.list_person_groups);
-        personGroupsListAdapter = new PersonGroupsListAdapter();
-        listView.setAdapter(personGroupsListAdapter);
-    }
-    private void initializeListView() {
-        ListView listView = (ListView) findViewById(R.id.list_person_groups);
-
-        personGroupsListAdapter = new PersonGroupsListAdapter();
-        listView.setAdapter(personGroupsListAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String personGroupId = personGroupsListAdapter.personGroupIdList.get(position);
-                    String personGroupName = StorageHelper.getPersonGroupName(
-                            personGroupId, MainActivity.this);
-
-                    Intent intent = new Intent(MainActivity.this, PersonGroupActivity.class);
-                    intent.putExtra("AddNewPersonGroup", false);
-                    intent.putExtra("PersonGroupName", personGroupName);
-                    intent.putExtra("PersonGroupId", personGroupId);
-                    startActivity(intent);
-                }
-
-        });
+        initializeRecyclerView();
     }
 
+    private void initializeRecyclerView() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_person_groups);
+        personGroupsListAdapter = new PersonGroupsListAdapter();
+        recyclerView.setAdapter(personGroupsListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
     public void addPersonGroup(View view){
         Intent intent = new Intent(this, AddPersonGroupActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
-
-
-    private class PersonGroupsListAdapter extends BaseAdapter {
+    private class PersonGroupsListAdapter extends RecyclerView.Adapter<PersonGroupsListAdapter.ItemHolder> {
 
         List<String> personGroupIdList;
-
-
 
         PersonGroupsListAdapter() {
 
             personGroupIdList = new ArrayList<>();
-
-
             Set<String> personGroupIds = StorageHelper.getAllPersonGroupIds(MainActivity.this);
-
-
             for (String personGroupId: personGroupIds) {
                 personGroupIdList.add(personGroupId);
-
+                Log.d("Mylist", personGroupId+"  k");
             }
+        }
+        @Override
+        public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            Context context = parent.getContext();
+            LayoutInflater inflater = LayoutInflater.from(context);
+
+            View view = inflater.inflate(R.layout.item_main_activity, parent, false);
+            return new ItemHolder(view);
         }
 
         @Override
-        public int getCount() {
+        public void onBindViewHolder(ItemHolder holder, int position) {
+            holder.bind(holder, position);
+        }
+
+        @Override
+        public int getItemCount() {
             return personGroupIdList.size();
         }
 
-        @Override
-        public Object getItem(int position) {
-            return personGroupIdList.get(position);
-        }
+        public class ItemHolder extends RecyclerView.ViewHolder {
+            TextView textView;
+            String personGroupName;
+            String personGroupId;
+            View itemView;
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            // set the item view
-            if (convertView == null) {
-                LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = layoutInflater.inflate(R.layout.item_person_group, parent, false);
+            public ItemHolder(View itemView) {
+                super(itemView);
+                textView=(TextView) itemView.findViewById(R.id.text_person_group);
+                this.itemView=itemView;
             }
-            convertView.setId(position);
 
-            // set the text of the item
-            String personGroupName = StorageHelper.getPersonGroupName(
-                    personGroupIdList.get(position), MainActivity.this);
-            int personNumberInGroup = StorageHelper.getAllPersonIds(
-                    personGroupIdList.get(position), MainActivity.this).size();
-            ((TextView)convertView.findViewById(R.id.text_person_group)).setText(
-                    String.format("%s (Person count: %d)", personGroupName, personNumberInGroup));
+            public void bind(ItemHolder holder, int pos) {
 
-            return convertView;
+
+                personGroupName = StorageHelper.getPersonGroupName(
+                        personGroupIdList.get(pos), MainActivity.this);
+
+                int personNumberInGroup = StorageHelper.getAllPersonIds(
+                        personGroupIdList.get(pos), MainActivity.this).size();
+
+                personGroupId = personGroupIdList.get(pos);
+                Log.d("My", personGroupId+" "+personNumberInGroup);
+                textView.setText(String.format("%s (Person count: %d)", personGroupName, personNumberInGroup));
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        Intent intent = new Intent(MainActivity.this, PersonGroupActivity.class);
+                        intent.putExtra("AddNewPersonGroup", false);
+                        intent.putExtra("PersonGroupName", personGroupName);
+                        intent.putExtra("PersonGroupId", personGroupId);
+                        startActivity(intent);
+                    }
+                });
+
+            }
         }
     }
 

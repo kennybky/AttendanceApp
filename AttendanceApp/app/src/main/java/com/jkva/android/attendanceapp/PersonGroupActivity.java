@@ -7,10 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-/**
- * Created by kenny on 7/18/2017.
- */
-
 public class PersonGroupActivity extends AppCompatActivity {
     String groupId;
     String groupName;

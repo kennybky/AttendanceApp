@@ -1,35 +1,4 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Face-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+
 package com.jkva.android.attendanceapp;
 
 import android.app.ProgressDialog;
@@ -88,7 +57,6 @@ public class IdentificationActivity extends AppCompatActivity {
 
         @Override
         protected IdentifyResult[] doInBackground(UUID... params) {
-            db= new DBHelper(IdentificationActivity.this).getReadableDatabase();
             String logString = "Request: Identifying faces ";
             for (UUID faceId: params) {
                 logString += faceId.toString() + ", ";
@@ -119,7 +87,7 @@ public class IdentificationActivity extends AppCompatActivity {
                         1);  /* maxNumOfCandidatesReturned */
             }  catch (Exception e) {
                 mSucceed = false;
-                publishProgress(e.getMessage());
+                publishProgress("No Face Added to the Class");
                 addLog(e.getMessage());
                 return null;
             }
@@ -149,9 +117,8 @@ public class IdentificationActivity extends AppCompatActivity {
 
     FaceListAdapter mFaceListAdapter;
 
-    PersonGroupListAdapter mPersonGroupListAdapter;
+    //PersonGroupListAdapter mPersonGroupListAdapter;
 
-    SQLiteDatabase db;
     String className;
 
     @Override
@@ -160,9 +127,9 @@ public class IdentificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_identification);
 
         detected = false;
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.progress_dialog_title));
+        setPersonGroupSelected();
 
         LogHelper.clearIdentificationLog();
     }
@@ -170,54 +137,18 @@ public class IdentificationActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        ListView listView = (ListView) findViewById(R.id.list_person_groups_identify);
-        mPersonGroupListAdapter = new PersonGroupListAdapter();
-        listView.setAdapter(mPersonGroupListAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setPersonGroupSelected(position);
-            }
-        });
-
-        if (mPersonGroupListAdapter.personGroupIdList.size() != 0) {
-            setPersonGroupSelected(0);
-        } else {
-            setPersonGroupSelected(-1);
-        }
     }
 
-    @Override
-    protected void onDestroy() {
-        db.close();
-        super.onDestroy();
-    }
-
-    void setPersonGroupSelected(int position) {
+    void setPersonGroupSelected() {
         TextView textView = (TextView) findViewById(R.id.text_person_group_selected);
-
-        if (position > 0) {
-            String personGroupIdSelected = mPersonGroupListAdapter.personGroupIdList.get(position);
-            mPersonGroupListAdapter.personGroupIdList.set(
-                    position, mPersonGroupListAdapter.personGroupIdList.get(0));
-            mPersonGroupListAdapter.personGroupIdList.set(0, personGroupIdSelected);
-            ListView listView = (ListView) findViewById(R.id.list_person_groups_identify);
-            listView.setAdapter(mPersonGroupListAdapter);
-            setPersonGroupSelected(0);
-        } else if (position < 0) {
-            setIdentifyButtonEnabledStatus(false);
-            textView.setTextColor(Color.RED);
-            textView.setText("No group selected!");
-        } else {
-            mPersonGroupId = mPersonGroupListAdapter.personGroupIdList.get(0);
-            String personGroupName = StorageHelper.getPersonGroupName(
-                    mPersonGroupId, IdentificationActivity.this);
-            refreshIdentifyButtonEnabledStatus();
-            textView.setTextColor(Color.BLACK);
-            textView.setText(String.format("Person group to use: %s", personGroupName));
-            className = personGroupName;
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mPersonGroupId = bundle.getString("PersonGroupId");
+            className = bundle.getString("PersonGroupName");
         }
+        refreshIdentifyButtonEnabledStatus();
+        textView.setTextColor(Color.BLACK);
+        textView.setText(String.format("Selected Class: %s", className));
     }
 
     private void setUiBeforeBackgroundTask() {
@@ -235,7 +166,7 @@ public class IdentificationActivity extends AppCompatActivity {
     private void setUiAfterIdentification(IdentifyResult[] result, boolean succeed) {
         progressDialog.dismiss();
 
-        setAllButtonsEnabledStatus(true);
+        //setAllButtonsEnabledStatus(true);
         setIdentifyButtonEnabledStatus(false);
 
         if (succeed) {
@@ -244,7 +175,6 @@ public class IdentificationActivity extends AppCompatActivity {
 
             if (result != null) {
                 mFaceListAdapter.setIdentificationResult(result);
-                idResults = result;
                 String logString = "Response: Success. ";
                 for (IdentifyResult identifyResult: result) {
                     logString += "Face " + identifyResult.faceId.toString() + " is identified as "
@@ -300,7 +230,7 @@ public class IdentificationActivity extends AppCompatActivity {
         protected void onPostExecute(Face[] result) {
             progressDialog.dismiss();
 
-            setAllButtonsEnabledStatus(true);
+            //setAllButtonsEnabledStatus(true);
 
             if (result != null) {
                 // Set the adapter of the ListView which contains the details of detected faces.
@@ -376,7 +306,7 @@ public class IdentificationActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-        setAllButtonsEnabledStatus(false);
+       // setAllButtonsEnabledStatus(false);
 
         // Start a background task to detect faces in the image.
         new DetectionTask().execute(inputStream);
@@ -398,7 +328,7 @@ public class IdentificationActivity extends AppCompatActivity {
                 faceIds.add(face.faceId);
             }
 
-            setAllButtonsEnabledStatus(false);
+            //setAllButtonsEnabledStatus(false);
 
             new IdentificationTask(mPersonGroupId).execute(
                     faceIds.toArray(new UUID[faceIds.size()]));
@@ -414,19 +344,19 @@ public class IdentificationActivity extends AppCompatActivity {
     }
 
     // Set whether the buttons are enabled.
-    private void setAllButtonsEnabledStatus(boolean isEnabled) {
-        Button selectImageButton = (Button) findViewById(R.id.manage_person_groups);
-        selectImageButton.setEnabled(isEnabled);
-
-        Button groupButton = (Button) findViewById(R.id.select_image);
-        groupButton.setEnabled(isEnabled);
-
-        Button identifyButton = (Button) findViewById(R.id.identify);
-        identifyButton.setEnabled(isEnabled);
-
-        Button viewLogButton = (Button) findViewById(R.id.view_log);
-        viewLogButton.setEnabled(isEnabled);
-    }
+//    private void setAllButtonsEnabledStatus(boolean isEnabled) {
+//        Button selectImageButton = (Button) findViewById(R.id.manage_person_groups);
+//        selectImageButton.setEnabled(isEnabled);
+//
+//        Button groupButton = (Button) findViewById(R.id.select_image);
+//        groupButton.setEnabled(isEnabled);
+//
+//        Button identifyButton = (Button) findViewById(R.id.identify);
+//        identifyButton.setEnabled(isEnabled);
+//
+//        Button viewLogButton = (Button) findViewById(R.id.view_log);
+//        viewLogButton.setEnabled(isEnabled);
+//    }
 
     // Set the group button is enabled or not.
     private void setIdentifyButtonEnabledStatus(boolean isEnabled) {
@@ -532,85 +462,13 @@ public class IdentificationActivity extends AppCompatActivity {
                             mIdentifyResults.get(position).candidates.get(0).confidence);
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             identity);
+                    SQLiteDatabase db= new DBHelper(IdentificationActivity.this).getReadableDatabase();
                     DatabaseUtils.insert(db, className, personName);
+                    db.close();
                 } else {
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             "Face cant be identified");
                 }
-            }
-
-            return convertView;
-        }
-    }
-
-    private IdentifyResult[] idResults;
-    public void idResult(View view){
-        
-
-    }
-
-
-
-    // The adapter of the ListView which contains the person groups.
-    private class PersonGroupListAdapter extends BaseAdapter {
-        List<String> personGroupIdList;
-
-        // Initialize with detection result.
-        PersonGroupListAdapter() {
-            personGroupIdList = new ArrayList<>();
-
-            Set<String> personGroupIds
-                    = StorageHelper.getAllPersonGroupIds(IdentificationActivity.this);
-
-            for (String personGroupId: personGroupIds) {
-                personGroupIdList.add(personGroupId);
-                if (mPersonGroupId != null && personGroupId.equals(mPersonGroupId)) {
-                    personGroupIdList.set(
-                            personGroupIdList.size() - 1,
-                            mPersonGroupListAdapter.personGroupIdList.get(0));
-                    mPersonGroupListAdapter.personGroupIdList.set(0, personGroupId);
-                }
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return personGroupIdList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return personGroupIdList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                LayoutInflater layoutInflater =
-                        (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = layoutInflater.inflate(R.layout.item_person_group, parent, false);
-            }
-            convertView.setId(position);
-
-            // set the text of the item
-            String personGroupName = StorageHelper.getPersonGroupName(
-                    personGroupIdList.get(position), IdentificationActivity.this);
-            int personNumberInGroup = StorageHelper.getAllPersonIds(
-                    personGroupIdList.get(position), IdentificationActivity.this).size();
-            ((TextView)convertView.findViewById(R.id.text_person_group)).setText(
-                    String.format(
-                            "%s (Person count: %d)",
-                            personGroupName,
-                            personNumberInGroup));
-
-            if (position == 0) {
-                ((TextView)convertView.findViewById(R.id.text_person_group)).setTextColor(
-                        Color.parseColor("#3399FF"));
             }
 
             return convertView;
