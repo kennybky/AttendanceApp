@@ -88,6 +88,7 @@ public class IdentificationActivity extends AppCompatActivity {
             }  catch (Exception e) {
                 mSucceed = false;
                 publishProgress("No Face Added to the Class");
+                e.printStackTrace();
                 addLog(e.getMessage());
                 return null;
             }
@@ -306,7 +307,7 @@ public class IdentificationActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-       // setAllButtonsEnabledStatus(false);
+        setAllButtonsEnabledStatus(false);
 
         // Start a background task to detect faces in the image.
         new DetectionTask().execute(inputStream);
@@ -328,7 +329,7 @@ public class IdentificationActivity extends AppCompatActivity {
                 faceIds.add(face.faceId);
             }
 
-            //setAllButtonsEnabledStatus(false);
+            setAllButtonsEnabledStatus(false);
 
             new IdentificationTask(mPersonGroupId).execute(
                     faceIds.toArray(new UUID[faceIds.size()]));
@@ -341,6 +342,16 @@ public class IdentificationActivity extends AppCompatActivity {
     // Add a log item.
     private void addLog(String log) {
         LogHelper.addIdentificationLog(log);
+    }
+
+    // Set whether the buttons are enabled.
+     private void setAllButtonsEnabledStatus(boolean isEnabled) {
+
+        Button groupButton = (Button) findViewById(R.id.select_image);
+        groupButton.setEnabled(isEnabled);
+
+        Button identifyButton = (Button) findViewById(R.id.identify);
+        identifyButton.setEnabled(isEnabled);
     }
 
     // Set the group button is enabled or not.
