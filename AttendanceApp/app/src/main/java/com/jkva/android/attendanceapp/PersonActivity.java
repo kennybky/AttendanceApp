@@ -1,39 +1,6 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Face-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+
 package com.jkva.android.attendanceapp;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,18 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -68,9 +26,7 @@ import java.util.UUID;
 
 
 public class PersonActivity extends AppCompatActivity {
-    // Background task of adding a person to person group.
     class AddPersonTask extends AsyncTask<String, String, String> {
-        // Indicate the next step is to add face in this person, or finish editing this person.
         boolean mAddFace;
 
         AddPersonTask (boolean addFace) {
@@ -79,13 +35,8 @@ public class PersonActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            // Get an instance of face service client.
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
             try{
-                publishProgress("Syncing with server to add person...");
-                addLog("Request: Creating Person in person group" + params[0]);
-
-                // Start the request to creating person.
                 CreatePersonResult createPersonResult = faceServiceClient.createPerson(
                         params[0],
                         getString(R.string.user_provided_person_name),
@@ -100,18 +51,12 @@ public class PersonActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            setUiBeforeBackgroundTask();
-        }
-
-        @Override
         protected void onProgressUpdate(String... progress) {
             setUiDuringBackgroundTask(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
             if (result != null) {
                 addLog("Response: Success. Person " + result + " created.");
@@ -138,7 +83,6 @@ public class PersonActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            // Get an instance of face service client.
             FaceServiceClient faceServiceClient = AttendanceApp.getFaceServiceClient();
             try{
                 publishProgress("Deleting selected faces...");
@@ -155,18 +99,12 @@ public class PersonActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            setUiBeforeBackgroundTask();
-        }
-
-        @Override
         protected void onProgressUpdate(String... progress) {
             setUiDuringBackgroundTask(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
             if (result != null) {
                 setInfo("Face " + result + " successfully deleted");
@@ -175,13 +113,7 @@ public class PersonActivity extends AppCompatActivity {
         }
     }
 
-    private void setUiBeforeBackgroundTask() {
-        progressDialog.show();
-    }
-
-    // Show the status of background detection task on screen.
     private void setUiDuringBackgroundTask(String progress) {
-        progressDialog.setMessage(progress);
         setInfo(progress);
     }
 
@@ -193,9 +125,6 @@ public class PersonActivity extends AppCompatActivity {
     private static final int REQUEST_SELECT_IMAGE = 0;
 
     FaceGridViewAdapter faceGridViewAdapter;
-
-    // Progress dialog popped up when communicating with server.
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,9 +146,6 @@ public class PersonActivity extends AppCompatActivity {
 
         EditText editTextPersonName = (EditText) findViewById(R.id.edit_person_name);
         editTextPersonName.setText(oldPersonName);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(getString(R.string.progress_dialog_title));
     }
 
 

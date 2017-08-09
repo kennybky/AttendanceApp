@@ -11,10 +11,6 @@ import com.microsoft.projectoxford.face.contract.IdentifyResult;
 
 import java.util.List;
 
-/**
- * Created by kenny on 7/31/2017.
- */
-
 public class IdResultFragment extends ListFragment {
 
 

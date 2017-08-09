@@ -1,35 +1,4 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Face-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+
 package com.jkva.android.attendanceapp;
 
 import android.app.ProgressDialog;
@@ -97,18 +66,12 @@ public class PersonListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            setUiBeforeBackgroundTask();
-        }
-
-        @Override
         protected void onProgressUpdate(String... progress) {
             setUiDuringBackgroundTask(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
             if (result != null) {
                 addLog("Response: Success. Group " + result + " training completed");
@@ -142,18 +105,12 @@ public class PersonListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            setUiBeforeBackgroundTask();
-        }
-
-        @Override
         protected void onProgressUpdate(String... progress) {
             setUiDuringBackgroundTask(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            progressDialog.dismiss();
 
             if (result != null) {
                 setInfo("Person " + result + " successfully deleted");
@@ -162,13 +119,8 @@ public class PersonListActivity extends AppCompatActivity {
         }
     }
 
-    private void setUiBeforeBackgroundTask() {
-        progressDialog.show();
-    }
-
     // Show the status of background detection task on screen.
     private void setUiDuringBackgroundTask(String progress) {
-        progressDialog.setMessage(progress);
 
         setInfo(progress);
     }
@@ -188,9 +140,6 @@ public class PersonListActivity extends AppCompatActivity {
     String personGroupId;
 
     PersonGridViewAdapter personGridViewAdapter;
-
-    // Progress dialog popped up when communicating with server.
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,10 +168,6 @@ public class PersonListActivity extends AppCompatActivity {
 
         EditText editTextPersonGroupName = (EditText)findViewById(R.id.edit_person_group_name);
         editTextPersonGroupName.setText(personGroupName);
-
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(getString(R.string.progress_dialog_title));
 
     }
 

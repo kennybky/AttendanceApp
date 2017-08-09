@@ -5,22 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="20dp"
+    android:weightSum="1"
     tools:context="com.jkva.android.attendanceapp.MainActivity">
 
-    <Button
-        android:id="@+id/add_person_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_person_group"
-        android:onClick="addPersonGroup"
-        android:layout_margin="25dp"
-        />
-
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list_person_groups"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dip"
+        android:layout_weight=".90" />
 
-        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addToDo"
+        android:layout_width="54dp"
+        android:layout_height="0dip"
+        android:layout_weight="0.18"
+        android:text="Add Item"
+        android:src="@drawable/ic_add_black"
+        android:onClick="addPersonGroup"
+        app:backgroundTint="@color/button_enabled_background"/>
+
+
 
 </LinearLayout>

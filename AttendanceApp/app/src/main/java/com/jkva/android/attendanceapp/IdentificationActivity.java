@@ -1,35 +1,4 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Face-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+
 package com.jkva.android.attendanceapp;
 
 import android.app.ProgressDialog;
@@ -90,7 +59,6 @@ public class IdentificationActivity extends AppCompatActivity {
 
         @Override
         protected IdentifyResult[] doInBackground(UUID... params) {
-            db= new DBHelper(IdentificationActivity.this).getWritableDatabase();
             String logString = "Request: Identifying faces ";
             for (UUID faceId: params) {
                 logString += faceId.toString() + ", ";
@@ -121,7 +89,8 @@ public class IdentificationActivity extends AppCompatActivity {
                         1);  /* maxNumOfCandidatesReturned */
             }  catch (Exception e) {
                 mSucceed = false;
-                publishProgress(e.getMessage());
+                publishProgress("No Face Added to the Class");
+                e.printStackTrace();
                 addLog(e.getMessage());
                 return null;
             }
@@ -152,8 +121,6 @@ public class IdentificationActivity extends AppCompatActivity {
 
     FaceListAdapter mFaceListAdapter;
 
-
-    SQLiteDatabase db;
     String className;
 
     @Override
@@ -166,14 +133,14 @@ public class IdentificationActivity extends AppCompatActivity {
             mPersonGroupName = bundle.getString("PersonGroupName");
         }
         detected = false;
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.progress_dialog_title));
+        setPersonGroupSelected();
 
         LogHelper.clearIdentificationLog();
     }
 
-    @Override
+
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -201,12 +168,6 @@ public class IdentificationActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
-
-    private void setUiBeforeBackgroundTask() {
-        progressDialog.show();
-    }
-
     // Show the status of background detection task on screen.
     private void setUiDuringBackgroundTask(String progress) {
         progressDialog.setMessage(progress);
@@ -218,7 +179,7 @@ public class IdentificationActivity extends AppCompatActivity {
     private void setUiAfterIdentification(IdentifyResult[] result, boolean succeed) {
         progressDialog.dismiss();
 
-        setAllButtonsEnabledStatus(true);
+        //setAllButtonsEnabledStatus(true);
         setIdentifyButtonEnabledStatus(false);
 
         if (succeed) {
@@ -227,7 +188,6 @@ public class IdentificationActivity extends AppCompatActivity {
 
             if (result != null) {
                 mFaceListAdapter.setIdentificationResult(result);
-                idResults = result;
                 String logString = "Response: Success. ";
                 for (IdentifyResult identifyResult: result) {
                     logString += "Face " + identifyResult.faceId.toString() + " is identified as "
@@ -283,7 +243,7 @@ public class IdentificationActivity extends AppCompatActivity {
         protected void onPostExecute(Face[] result) {
             progressDialog.dismiss();
 
-            setAllButtonsEnabledStatus(true);
+            //setAllButtonsEnabledStatus(true);
 
             if (result != null) {
                 // Set the adapter of the ListView which contains the details of detected faces.
@@ -396,15 +356,12 @@ public class IdentificationActivity extends AppCompatActivity {
         LogHelper.addIdentificationLog(log);
     }
 
-    // Set whether the buttons are enabled.
     private void setAllButtonsEnabledStatus(boolean isEnabled) {
-
         Button groupButton = (Button) findViewById(R.id.select_image);
         groupButton.setEnabled(isEnabled);
 
         Button identifyButton = (Button) findViewById(R.id.identify);
         identifyButton.setEnabled(isEnabled);
-
     }
 
     // Set the group button is enabled or not.
@@ -511,6 +468,10 @@ public class IdentificationActivity extends AppCompatActivity {
                             mIdentifyResults.get(position).candidates.get(0).confidence);
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             identity);
+
+                    SQLiteDatabase db= new DBHelper(IdentificationActivity.this).getReadableDatabase();
+                    DatabaseUtils.insert(db, className, personName);
+                    db.close();
                     className = mPersonGroupName;
                     DatabaseUtils.insert(db, className, personName);
                     Log.d("database", className + " " + personName+ " inserted");
@@ -523,11 +484,4 @@ public class IdentificationActivity extends AppCompatActivity {
             return convertView;
         }
     }
-
-    private IdentifyResult[] idResults;
-    public void idResult(View view){
-
-
-    }
-
 }

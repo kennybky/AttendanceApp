@@ -15,10 +15,6 @@ import android.view.ViewGroup;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by kenny on 7/22/2017.
- */
-
 public class AddPersonFragment extends DialogFragment {
 
     private static final int REQUEST_TAKE_PHOTO = 0 ;

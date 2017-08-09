@@ -1,4 +1,3 @@
-<!-- Copyright (c) Microsoft. All rights reserved. -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
@@ -18,7 +17,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:layout_marginBottom="@dimen/view_margin">
 
             <RelativeLayout
@@ -46,6 +45,14 @@
                     android:text="@string/select_image"
                     android:onClick="selectImage"
                     style="@style/ButtonStyle" />
+
+                <TextView
+                    android:id="@+id/text_person_group_selected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="person groups" />
 
             </RelativeLayout>
 
@@ -102,17 +109,6 @@
             android:text="Identify"
             android:onClick="identify"
             style="@style/ButtonStyle" />
-
-
-        <Button
-            android:id="@+id/id_result"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="View Log"
-            android:onClick="idResult"
-            style="@style/ButtonStyle" />
-
     </LinearLayout>
 
 </RelativeLayout>

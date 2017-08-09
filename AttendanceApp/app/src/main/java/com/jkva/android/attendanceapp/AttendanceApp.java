@@ -1,9 +1,5 @@
 package com.jkva.android.attendanceapp;
 
-/**
- * Created by kenny on 7/18/2017.
- */
-
 import android.app.Application;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
