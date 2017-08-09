@@ -50,7 +50,8 @@ public class HistoryActivity extends AppCompatActivity{
     }
     public void dateSelected(String date){
         button.setText(date);
-        Cursor cursor = DatabaseUtils.getAll(db, Contract.TABLE_ATTENDANCE.COLUMN_NAME_DATE+"='"+date+"'");
+        Cursor cursor = DatabaseUtils.getAll(db, Contract.TABLE_ATTENDANCE.COLUMN_NAME_DATE+"='"+date+"' and "
+                +Contract.TABLE_ATTENDANCE.COLUMN_NAME_CLASS_NAME+"='"+getIntent().getExtras().getString("PersonGroupName")+"'");
         historyAdapter.swapCursor(cursor);
         rv.setAdapter(historyAdapter);
         historyAdapter.notifyDataSetChanged();

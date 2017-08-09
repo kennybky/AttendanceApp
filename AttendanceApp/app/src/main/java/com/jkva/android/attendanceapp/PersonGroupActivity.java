@@ -47,6 +47,7 @@ public class PersonGroupActivity extends AppCompatActivity {
 
     public void viewHistory(View view) {
         Intent intent = new Intent(this, HistoryActivity.class);
+        intent.putExtra("PersonGroupName", groupName);
         startActivity(intent);
     }
 
