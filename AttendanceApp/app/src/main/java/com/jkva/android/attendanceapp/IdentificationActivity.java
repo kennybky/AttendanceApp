@@ -12,8 +12,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,12 +115,11 @@ public class IdentificationActivity extends AppCompatActivity {
     }
 
     String mPersonGroupId;
+    String mPersonGroupName;
 
     boolean detected;
 
     FaceListAdapter mFaceListAdapter;
-
-    //PersonGroupListAdapter mPersonGroupListAdapter;
 
     String className;
 
@@ -126,7 +127,11 @@ public class IdentificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identification);
-
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mPersonGroupId = bundle.getString("PersonGroupId");
+            mPersonGroupName = bundle.getString("PersonGroupName");
+        }
         detected = false;
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.progress_dialog_title));
@@ -135,25 +140,32 @@ public class IdentificationActivity extends AppCompatActivity {
         LogHelper.clearIdentificationLog();
     }
 
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("PersonGroupId", mPersonGroupId);
+        outState.putString("PersonGroupName", mPersonGroupName);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+       mPersonGroupId = savedInstanceState.getString("PersonGroupId");
+        mPersonGroupName = savedInstanceState.getString("PersonGroupName");
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
     }
 
-    void setPersonGroupSelected() {
-        TextView textView = (TextView) findViewById(R.id.text_person_group_selected);
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            mPersonGroupId = bundle.getString("PersonGroupId");
-            className = bundle.getString("PersonGroupName");
-        }
-        refreshIdentifyButtonEnabledStatus();
-        textView.setTextColor(Color.BLACK);
-        textView.setText(String.format("Selected Class: %s", className));
-    }
-
-    private void setUiBeforeBackgroundTask() {
-        progressDialog.show();
+    @Override
+    protected void onDestroy() {
+        db.close();
+        super.onDestroy();
     }
 
     // Show the status of background detection task on screen.
@@ -344,9 +356,7 @@ public class IdentificationActivity extends AppCompatActivity {
         LogHelper.addIdentificationLog(log);
     }
 
-    // Set whether the buttons are enabled.
-     private void setAllButtonsEnabledStatus(boolean isEnabled) {
-
+    private void setAllButtonsEnabledStatus(boolean isEnabled) {
         Button groupButton = (Button) findViewById(R.id.select_image);
         groupButton.setEnabled(isEnabled);
 
@@ -458,9 +468,13 @@ public class IdentificationActivity extends AppCompatActivity {
                             mIdentifyResults.get(position).candidates.get(0).confidence);
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             identity);
+
                     SQLiteDatabase db= new DBHelper(IdentificationActivity.this).getReadableDatabase();
                     DatabaseUtils.insert(db, className, personName);
                     db.close();
+                    className = mPersonGroupName;
+                    DatabaseUtils.insert(db, className, personName);
+                    Log.d("database", className + " " + personName+ " inserted");
                 } else {
                     ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(
                             "Face cant be identified");
